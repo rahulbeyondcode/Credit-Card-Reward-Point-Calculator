@@ -1,4 +1,9 @@
-import { useRef, type ChangeEvent } from "react";
+import { useForm } from "react-hook-form";
+import { yupResolver } from "@hookform/resolvers/yup";
+import * as yup from "yup";
+
+import InputField from "./components/form-components/input";
+import SelectField from "./components/form-components/select";
 
 const cardData = {
   cards: {
@@ -44,22 +49,31 @@ const cardData = {
   },
 };
 
+const spendCategories = [
+  { value: "fuel", label: "Fuel" },
+  { value: "grocery", label: "Grocery" },
+  { value: "departmental_store", label: "Departmental Store" },
+  { value: "others", label: "Others" },
+];
+
+type FormType = {
+  amount: string;
+  category: string;
+};
+
+const schema = yup.object().shape({
+  amount: yup.string().required("Amount is required"),
+  category: yup.string().required("Choose a category to continue"),
+});
+
 function App() {
-  const formData = useRef({
-    amount: "",
-    category: "",
+  const { register, handleSubmit } = useForm<FormType>({
+    mode: "all",
+    resolver: yupResolver(schema),
   });
 
-  console.log("cardData: ", cardData);
-
-  const handleChange = (
-    event: ChangeEvent<HTMLInputElement | HTMLSelectElement>
-  ) => {
-    const target = event.target.id as "amount" | "category";
-    console.log("event: ", event.target.value);
-    formData.current[target] = event.target.value;
-
-    console.log("formData: ", formData.current);
+  const onSubmit = (formData: FormType) => {
+    console.log("formData: ", formData);
   };
 
   return (
@@ -71,21 +85,23 @@ function App() {
 
       <form>
         <section>
-          <label htmlFor="amount">Enter the amount</label>
-          <input id="amount" type="text" onChange={handleChange} />
+          <InputField
+            name="amount"
+            labelText="Enter the amount"
+            register={register}
+          />
         </section>
 
         <section>
-          <label htmlFor="category">Choose the category</label>
-          <select id="category" onChange={handleChange}>
-            <option value="fuel">Fuel</option>
-            <option value="grocery">Grocery</option>
-            <option value="departmental_store">Departmental Store</option>
-            <option value="others">Others</option>
-          </select>
+          <SelectField
+            name="category"
+            options={spendCategories}
+            register={register}
+            labelText="Choose the category"
+          />
         </section>
 
-        <button>Check Points</button>
+        <button onClick={handleSubmit(onSubmit)}>Check Points</button>
       </form>
 
       <main>
