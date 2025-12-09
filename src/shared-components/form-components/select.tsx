@@ -1,8 +1,13 @@
-import type { FieldValues, Path, UseFormRegister } from "react-hook-form";
+import {
+  useController,
+  type Control,
+  type FieldValues,
+  type Path,
+} from "react-hook-form";
 
-type PropsType<TFieldValues extends FieldValues> = {
-  name: Path<TFieldValues>;
-  register: UseFormRegister<FieldValues>;
+type PropsType<T extends FieldValues> = {
+  name: Path<T>;
+  control: Control<T>;
   id?: string;
   options: { label: string; value: string }[];
   labelText?: string;
@@ -10,9 +15,7 @@ type PropsType<TFieldValues extends FieldValues> = {
   selectClassName?: string;
 };
 
-const SelectField = <TFieldValues extends FieldValues>(
-  props: PropsType<TFieldValues>
-) => {
+const SelectField = <T extends FieldValues>(props: PropsType<T>) => {
   const {
     labelText,
     name,
@@ -20,8 +23,13 @@ const SelectField = <TFieldValues extends FieldValues>(
     labelClassName,
     selectClassName,
     options,
-    register,
+    control,
   } = props;
+
+  const {
+    field,
+    fieldState: { error },
+  } = useController({ control, name });
 
   return (
     <>
@@ -31,13 +39,16 @@ const SelectField = <TFieldValues extends FieldValues>(
         </label>
       ) : null}
 
-      <select {...register(name)} id={id || name} className={selectClassName}>
+      <select {...field} id={id || name} className={selectClassName}>
+        <option value="">-- Choose One --</option>
         {(options || []).map((option) => (
           <option key={option.value} value={option.value}>
             {option.label}
           </option>
         ))}
       </select>
+
+      {error && <small className="text-red-500 text-sm">{error.message}</small>}
     </>
   );
 };
