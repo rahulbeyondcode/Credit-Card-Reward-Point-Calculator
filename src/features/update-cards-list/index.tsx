@@ -1,7 +1,5 @@
-import React from "react";
-
-const CardsSection = () => {
-  return <div>CardsSection</div>;
+const CardList = () => {
+  return <div>CardList</div>;
 };
 
-export default CardsSection;
+export default CardList;

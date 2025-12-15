@@ -2,8 +2,8 @@ import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
 
-import InputField from "../../shared-components/form-components/input";
-import SelectField from "../../shared-components/form-components/select";
+import InputField from "shared-components/form-components/input";
+import SelectField from "shared-components/form-components/select";
 
 const cardData = {
   cards: {
@@ -17,6 +17,7 @@ const cardData = {
         rounding: "floor",
         network: "Rupay",
         active: true,
+        moneyPerPoint: 0.25,
         reward_by_category: {
           "1": {
             category_id: "1",
